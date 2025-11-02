@@ -1,0 +1,4 @@
+if(PCL_BUILD_DEVTOOLS)
+  include_directories(include)
+  add_subdirectory(pcl-opt)
+endif()
