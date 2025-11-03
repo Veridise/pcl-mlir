@@ -1,4 +1,4 @@
-//===-- pcl-opt.cpp --------------------------------------------*- C++ -*-===//
+//===-- pcl-opt.cpp ---------------------------------------------*- C++ -*-===//
 //
 // Part of the PCL Project, under the Apache License v2.0.
 // See LICENSE.txt for license information.
