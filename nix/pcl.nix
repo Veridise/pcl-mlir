@@ -34,7 +34,7 @@ stdenv.mkDerivation {
       };
 
   nativeBuildInputs = [ clang cmake ninja ];
-  buildInputs = [ mlir_pkg ]
+  buildInputs = [ mlir_pkg ];
 
   cmakeFlags = [
     "-DCMAKE_BUILD_TYPE=${cmakeBuildType}"

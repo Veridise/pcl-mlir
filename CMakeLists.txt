@@ -143,12 +143,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCLMacros.cmake)
 
 # Create an empty list for the dialect libraries, to be populated in the lib
 # subdirectory.
-add_library(LLZKAllDialects INTERFACE)
-add_library(LLZK::AllDialects ALIAS LLZKAllDialects)
+add_library(PCLAllDialects INTERFACE)
+add_library(PCL::AllDialects ALIAS PCLAllDialects)
 # Ensures that the target can be imported as "LLZK::AllDialects" and not
 # "LLZK::LLZKAllDialects"
-set_target_properties(LLZKAllDialects PROPERTIES EXPORT_NAME "AllDialects")
-install(TARGETS LLZKAllDialects EXPORT LLZKTargets)
+set_target_properties(PCLAllDialects PROPERTIES EXPORT_NAME "AllDialects")
+install(TARGETS PCLAllDialects EXPORT PCLTargets)
 
 add_subdirectory(include)
 add_subdirectory(lib)

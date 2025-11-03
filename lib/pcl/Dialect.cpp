@@ -1,0 +1,56 @@
+//===-- Dialect.cpp - PCL dialect implementation -----------*- C++ -*-----===//
+//
+// Part of the PCL Project, under the Apache License v2.0.
+// See LICENSE.txt for license information.
+// Copyright 2025 Veridise Inc.
+// SPDX-License-Identifier: Apache-2.0
+//
+//===----------------------------------------------------------------------===//
+
+#include "pcl/Dialect/IR/Dialect.h"
+#include "pcl/Dialect/IR/Ops.h"
+#include "pcl/Dialect/IR/Types.h"
+
+#include <mlir/IR/DialectImplementation.h>
+
+// TableGen'd implementation files
+#include "pcl/Dialect/IR/Dialect.cpp.inc"
+
+#define GET_ATTRDEF_CLASSES
+#include "pcl/Dialect/IR/Attrs.cpp.inc"
+
+#define GET_TYPEDEF_CLASSES
+#include "pcl/Dialect/IR/Types.cpp.inc"
+
+void pcl::PCLDialect::initialize() {
+  addOperations<
+#define GET_OP_LIST
+#include "pcl/Dialect/IR/Ops.cpp.inc"
+      >();
+
+  addTypes<
+#define GET_TYPEDEF_LIST
+#include "pcl/Dialect/IR/Types.cpp.inc"
+      >();
+
+  addAttributes<
+#define GET_ATTRDEF_LIST
+#include "pcl/Dialect/IR/Attrs.cpp.inc"
+      >();
+}
+
+mlir::LogicalResult
+pcl::PCLDialect::verifyOperationAttribute(mlir::Operation *op, mlir::NamedAttribute attr) {
+  if (auto prime = mlir::dyn_cast<pcl::PrimeAttr>(attr.getValue())) {
+    if (!llvm::isa<mlir::ModuleOp>(op)) {
+      return op->emitError() << "#pcl.prime may only be attached to builtin.module";
+    }
+    // Optional: range/primality checks
+    auto v = prime.getValue();
+    if (!v.getAPSInt().isStrictlyPositive()) {
+      return op->emitError() << "prime must be positive";
+    }
+    // You can add: bit-width limits, specific primes, etc.
+  }
+  return mlir::success();
+}

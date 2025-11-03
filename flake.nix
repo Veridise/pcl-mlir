@@ -124,8 +124,8 @@
                 old.nativeBuildInputs
                 ++ (with pkgs; [
                   # clang-tidy and clang-format
-                  pcl-llvmPackages.clang-tools
-
+                  llzk-llvmPackages.clang-tools
+                 pkgs.pkg-config
                   # git-clang-format
                   libclang.python
                 ]);
@@ -169,7 +169,7 @@
           inherit (pkgs) changelogCreator;
           # Prevent use of libllvm and llvm from nixpkgs, which will have
           # different versions than mlir/llvm built here.
-          inherit (pkgs.pcl-llvmPackages) libllvm llvm;
+          inherit (pkgs.llzk-llvmPackages) libllvm llvm;
 
           default = pkgs.pcl;
           debugClang = pkgs.pclDebWithSansClang;
