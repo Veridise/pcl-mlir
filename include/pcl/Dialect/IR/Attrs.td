@@ -30,14 +30,14 @@ def FeltAttr : AttrDef<PCLDialect, "Felt"> {
 }
 
 def PrimeAttr : AttrDef<PCLDialect, "Prime"> {
-  let mnemonic = "prime-number"; // prints as #pcl.prime<...>
+  let mnemonic = "prime"; // prints as #pcl.prime<...>
   let summary = "Prime field modulus for this module";
   let description = [{
     Attach this as a named attribute (e.g. pcl.prime) on builtin.module.
     Use an APInt literal so very large primes are supported.
   }];
   let parameters = (ins "::mlir::IntegerAttr":$value);
-  let assemblyFormat = "`<` $value `>`";
+  let assemblyFormat = "`<`$value`>`";
 }
 
 #endif // PCL_ATTRS

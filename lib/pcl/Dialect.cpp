@@ -45,12 +45,10 @@ pcl::PCLDialect::verifyOperationAttribute(mlir::Operation *op, mlir::NamedAttrib
     if (!llvm::isa<mlir::ModuleOp>(op)) {
       return op->emitError() << "#pcl.prime may only be attached to builtin.module";
     }
-    // Optional: range/primality checks
     auto v = prime.getValue();
     if (!v.getAPSInt().isStrictlyPositive()) {
       return op->emitError() << "prime must be positive";
     }
-    // You can add: bit-width limits, specific primes, etc.
   }
   return mlir::success();
 }
