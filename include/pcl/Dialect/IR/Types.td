@@ -8,7 +8,7 @@ class PCL_Type<string name, string storage> : TypeDef<PCLDialect, name> {
   let mnemonic = storage;
 }
 
-def PCL_FieldType : PCL_Type<"Felt", "felt">{
+def PCL_FieldType : PCL_Type<"Felt", "felt"> {
   let summary = "Finite field element";
 }
 
