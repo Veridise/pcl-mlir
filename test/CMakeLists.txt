@@ -1,0 +1,27 @@
+# llvm-lit is named lit in external builds
+find_program(LLVM_EXTERNAL_LIT NAMES lit llvm-lit ${LLVM_EXTERNAL_LIT} REQUIRED)
+message(STATUS "Using lit: ${LLVM_EXTERNAL_LIT}")
+
+set(PCL_TEST_DEPENDS pcl-opt)
+
+set(PCL_LIT_COMPATIBLE_COVERAGE_STRING "False")
+if(PCL_LIT_COMPATIBLE_COVERAGE)
+  message(STATUS "Lit will generate coverage information for every test")
+  set(PCL_LIT_COMPATIBLE_COVERAGE_STRING "True")
+endif()
+
+set(LIT_ARGS "--xunit-xml-output report.xml")
+
+configure_lit_site_cfg(
+  ${CMAKE_CURRENT_SOURCE_DIR}/lit.site.cfg.py.in
+  ${CMAKE_CURRENT_BINARY_DIR}/lit.site.cfg.py MAIN_CONFIG
+  ${CMAKE_CURRENT_SOURCE_DIR}/lit.cfg.py)
+
+add_lit_testsuite(
+  check-lit
+  "Running the lit-based regression tests"
+  ${CMAKE_CURRENT_BINARY_DIR}
+  DEPENDS
+  ${PCL_TEST_DEPENDS}
+  ARGS
+  ${LIT_ARGS})

@@ -27,19 +27,27 @@ class PCL_Op<string mnemonic, list<Trait> traits = []>
 // -----------------------------------------------------------------------------
 // Arithmetic over fields
 // -----------------------------------------------------------------------------
+
+def PCL_ConstOp : PCL_Op<"const", [Pure, InsideFunc]> {
+  let summary = "Constant felt";
+  let arguments = (ins FeltAttr:$value);
+  let results = (outs PCL_FieldType:$res);
+  let assemblyFormat = "$value attr-dict";
+}
+
 def PCL_AddOp : PCL_Op<"add", [Pure, Commutative, SameOperandsAndResultType,
                                InsideFunc]> {
   let summary = "Field addition";
   let arguments = (ins PCL_FieldType:$lhs, PCL_FieldType:$rhs);
   let results = (outs PCL_FieldType:$res);
-  let assemblyFormat = "$lhs `,` $rhs attr-dict `:` type($res)";
+  let assemblyFormat = "$lhs `,` $rhs attr-dict";
 }
 
 def PCL_SubOp : PCL_Op<"sub", [Pure, SameOperandsAndResultType, InsideFunc]> {
   let summary = "Field subtraction";
   let arguments = (ins PCL_FieldType:$lhs, PCL_FieldType:$rhs);
   let results = (outs PCL_FieldType:$res);
-  let assemblyFormat = "$lhs `,` $rhs attr-dict `:` type($res)";
+  let assemblyFormat = "$lhs `,` $rhs attr-dict";
 }
 
 def PCL_MulOp : PCL_Op<"mul", [Pure, Commutative, SameOperandsAndResultType,
@@ -47,14 +55,14 @@ def PCL_MulOp : PCL_Op<"mul", [Pure, Commutative, SameOperandsAndResultType,
   let summary = "Field multiplication";
   let arguments = (ins PCL_FieldType:$lhs, PCL_FieldType:$rhs);
   let results = (outs PCL_FieldType:$res);
-  let assemblyFormat = "$lhs `,` $rhs attr-dict `:` type($res)";
+  let assemblyFormat = "$lhs `,` $rhs attr-dict";
 }
 
 def PCL_NegOp : PCL_Op<"neg", [Pure, SameOperandsAndResultType, InsideFunc]> {
   let summary = "Field negation";
   let arguments = (ins PCL_FieldType:$val);
   let results = (outs PCL_FieldType:$res);
-  let assemblyFormat = "$val attr-dict `:` type($res)";
+  let assemblyFormat = "$val attr-dict";
 }
 
 // -----------------------------------------------------------------------------
@@ -69,7 +77,6 @@ class PCLCmpBase<string mnem, string doc> : Op<PCLDialect, mnem, [Pure]> {
 
 def PCL_CmpEqOp : PCLCmpBase<"eq", "lhs == rhs (field equality)">;
 def PCL_CmpLtOp : PCLCmpBase<"lt", "lhs < rhs (signed/semantic: range)">;
-// If you need unsigned semantics, duplicate with a different name or attr.
 def PCL_CmpLeOp : PCLCmpBase<"le", "lhs <= rhs">;
 def PCL_CmpGtOp : PCLCmpBase<"gt", "lhs > rhs">;
 def PCL_CmpGeOp : PCLCmpBase<"ge", "lhs >= rhs">;
@@ -134,7 +141,6 @@ def PCL_PostOp : PCL_Op<"post-cond", []> {
   let assemblyFormat = "$cond attr-dict";
 }
 
-// Keep if you want: assume-deterministic (accept either field or bool)
 def PCL_AssumeDeterministicOp : PCL_Op<"assume.deterministic", []> {
   let summary = "Assume the given value is deterministic";
   let arguments = (ins PCL_FieldType:$v);

@@ -39,14 +39,22 @@ void pcl::PCLDialect::initialize() {
       >();
 }
 
+using namespace pcl;
+
 mlir::LogicalResult
-pcl::PCLDialect::verifyOperationAttribute(mlir::Operation *op, mlir::NamedAttribute attr) {
-  if (auto prime = mlir::dyn_cast<pcl::PrimeAttr>(attr.getValue())) {
-    if (!llvm::isa<mlir::ModuleOp>(op)) {
-      return op->emitError() << "#pcl.prime may only be attached to builtin.module";
+PCLDialect::verifyOperationAttribute(mlir::Operation *op, mlir::NamedAttribute attr) {
+  if (attr.getName() == "pcl.prime") {
+    auto prime = llvm::dyn_cast<pcl::PrimeAttr>(attr.getValue());
+    if (!prime) {
+      return op->emitError() << "'pcl.prime' must be a #pcl.prime<...>";
     }
-    auto v = prime.getValue();
-    if (!v.getAPSInt().isStrictlyPositive()) {
+
+    if (!llvm::isa<mlir::ModuleOp>(op)) {
+      return op->emitError() << "'pcl.prime' may only be on builtin.module";
+    }
+
+    const llvm::APInt &v = prime.getValue().getValue();
+    if (v.isZero() || v.isNegative()) {
       return op->emitError() << "prime must be positive";
     }
   }
