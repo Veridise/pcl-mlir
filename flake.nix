@@ -1,14 +1,14 @@
 {
   inputs = {
-    pcl-pkgs.url = "github:Veridise/llzk-nix-pkgs";
-    nixpkgs.follows = "pcl-pkgs/nixpkgs";
-    flake-utils.follows = "pcl-pkgs/flake-utils";
+    shared-pkgs.url = "github:Veridise/llzk-nix-pkgs";
+    nixpkgs.follows = "shared-pkgs/nixpkgs";
+    flake-utils.follows = "shared-pkgs/flake-utils";
 
     release-helpers = {
       url = "github:Veridise/open-source-release-helpers";
       inputs = {
-        nixpkgs.follows = "pcl-pkgs/nixpkgs";
-        flake-utils.follows = "pcl-pkgs/flake-utils";
+        nixpkgs.follows = "shared-pkgs/nixpkgs";
+        flake-utils.follows = "shared-pkgs/flake-utils";
       };
     };
   };
@@ -21,7 +21,7 @@
       self,
       nixpkgs,
       flake-utils,
-      pcl-pkgs,
+      shared-pkgs,
       release-helpers,
     }:
     {
@@ -39,8 +39,7 @@
               # https://github.com/google/sanitizers/wiki/AddressSanitizerContainerOverflow#false-positives
               preBuild = ''
                 export ASAN_OPTIONS=detect_container_overflow=0
-              ''
-              + attrs.preBuild;
+              '';
 
               postInstall = ''
                 if [ -f test/report.xml ]; then
@@ -155,7 +154,7 @@
 
           overlays = [
             self.overlays.default
-            pcl-pkgs.overlays.default
+            shared-pkgs.overlays.default
             release-helpers.overlays.default
           ];
         };

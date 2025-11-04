@@ -32,33 +32,14 @@
         "type": "github"
       }
     },
-    "pcl-pkgs": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1761872169,
-        "narHash": "sha256-fO6uRWlCHg4HuJrRfQReFUhSFIQ/kSXS3iyhdT8026Q=",
-        "owner": "Veridise",
-        "repo": "llzk-nix-pkgs",
-        "rev": "7615a3a1ae875952ce1df0b513de1162e829894e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Veridise",
-        "repo": "llzk-nix-pkgs",
-        "type": "github"
-      }
-    },
     "release-helpers": {
       "inputs": {
         "flake-utils": [
-          "pcl-pkgs",
+          "shared-pkgs",
           "flake-utils"
         ],
         "nixpkgs": [
-          "pcl-pkgs",
+          "shared-pkgs",
           "nixpkgs"
         ]
       },
@@ -79,15 +60,34 @@
     "root": {
       "inputs": {
         "flake-utils": [
-          "pcl-pkgs",
+          "shared-pkgs",
           "flake-utils"
         ],
         "nixpkgs": [
-          "pcl-pkgs",
+          "shared-pkgs",
           "nixpkgs"
         ],
-        "pcl-pkgs": "pcl-pkgs",
-        "release-helpers": "release-helpers"
+        "release-helpers": "release-helpers",
+        "shared-pkgs": "shared-pkgs"
+      }
+    },
+    "shared-pkgs": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1761872169,
+        "narHash": "sha256-fO6uRWlCHg4HuJrRfQReFUhSFIQ/kSXS3iyhdT8026Q=",
+        "owner": "Veridise",
+        "repo": "llzk-nix-pkgs",
+        "rev": "7615a3a1ae875952ce1df0b513de1162e829894e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Veridise",
+        "repo": "llzk-nix-pkgs",
+        "type": "github"
       }
     }
   },
