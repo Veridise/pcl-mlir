@@ -25,6 +25,27 @@ class PCL_Op<string mnemonic, list<Trait> traits = []>
     : Op<PCLDialect, mnemonic, traits>;
 
 // -----------------------------------------------------------------------------
+// Variable declaration
+// -----------------------------------------------------------------------------
+
+def PCL_VarOp : PCL_Op<"var", [Pure, InsideFunc]> {
+  let summary = "Declare a felt variable.";
+  let description = [{
+    The `var` op creates a new variable associated with a name. It additionally takes a parameter
+    `is_output` which indicates an output variable if true and an intermediate otherwise.
+
+    Example:
+    ```
+      %0 = pcl.def "foo" true // output
+      %1 = pcl.def "bar" false // intermediate
+    ```
+  }];
+  let arguments = (ins StrAttr:$name, BoolAttr:$is_output);
+  let results = (outs PCL_FieldType:$res);
+  let assemblyFormat = "$name $is_output attr-dict";
+}
+
+// -----------------------------------------------------------------------------
 // Arithmetic over fields
 // -----------------------------------------------------------------------------
 
@@ -145,6 +166,19 @@ def PCL_AssumeDeterministicOp : PCL_Op<"assume.deterministic", []> {
   let summary = "Assume the given value is deterministic";
   let arguments = (ins PCL_FieldType:$v);
   let assemblyFormat = "$v attr-dict";
+}
+
+// -----------------------------------------------------------------------------
+// Custom return op
+// -----------------------------------------------------------------------------
+def PCL_ReturnOp : PCL_Op<"return", [Terminator, InsideFunc]> {
+  let arguments = (ins Variadic<PCL_FieldType>:$vals);
+  let description = [{
+    Return operation for the PCL dialect.  
+    Verifies that all returned values are defined by output variables.
+  }];
+  let hasVerifier = 1;
+  let assemblyFormat = "($vals^ `:` type($vals))? attr-dict";
 }
 
 #endif // PCL_OPS

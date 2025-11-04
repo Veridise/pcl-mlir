@@ -11,3 +11,4 @@ target_include_directories(PCLDialectHeaders
 install(TARGETS PCLDialectHeaders EXPORT PCLTargets)
 
 add_subdirectory(pcl/Dialect/IR/)
+add_subdirectory(pcl/Transforms/)

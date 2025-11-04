@@ -9,6 +9,7 @@
 
 #include "pcl/Dialect/IR/Dialect.h"
 #include "pcl/InitAllDialects.h"
+#include "pcl/Transforms/PCLTransformationPasses.h"
 
 #include <mlir/IR/DialectRegistry.h>
 #include <mlir/IR/MLIRContext.h>
@@ -31,6 +32,7 @@ int main(int argc, char **argv) {
 
   mlir::DialectRegistry registry;
   pcl::registerAllDialects(registry);
+  pcl::registerTransformationPasses();
 
   return mlir::asMainReturnCode(mlir::MlirOptMain(argc, argv, "PCL Optimizer\n", registry));
 }

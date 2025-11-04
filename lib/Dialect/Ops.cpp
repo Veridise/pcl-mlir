@@ -14,3 +14,18 @@
 // TableGen'd implementation files
 #define GET_OP_CLASSES
 #include "pcl/Dialect/IR/Ops.cpp.inc"
+using namespace mlir;
+namespace pcl {
+
+LogicalResult ReturnOp::verify() {
+  for (mlir::Value v : getVals()) {
+    Operation *def = v.getDefiningOp();
+    auto var = llvm::dyn_cast_or_null<pcl::VarOp>(def);
+    if (!var || !var.getIsOutput()) {
+      return emitOpError() << "all return values must be defined by output variables";
+    }
+  }
+  return mlir::success();
+}
+
+} // namespace pcl

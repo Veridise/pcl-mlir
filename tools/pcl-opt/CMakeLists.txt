@@ -14,4 +14,5 @@ target_link_libraries(pcl-opt
   MLIRPass
   MLIRTransforms
   PCLDialect
+  PCLTransforms
 )
