@@ -42,7 +42,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FeatureTests.cmake)
 # Dependency setup
 
 find_package(LLVM 20.1 REQUIRED CONFIG)
-find_package(MLIR REQUIRED CONFIG)
+find_package(MLIR 20.1 REQUIRED CONFIG)
 
 message(STATUS "Using LLVM in: ${LLVM_DIR}")
 message(STATUS "Using MLIR in: ${MLIR_DIR}")
