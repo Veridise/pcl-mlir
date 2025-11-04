@@ -113,37 +113,6 @@
             '';
           };
 
-          # The default shell is used for PCL development.
-          # Because `nix develop` is used to set up a dev shell for a given
-          # derivation, we just need to extend the pcl derivation with any
-          # extra tools we need.
-          devShellBase = pkgs: pclEnv: {
-            shell = pclEnv.overrideAttrs (old: {
-              nativeBuildInputs =
-                old.nativeBuildInputs
-                ++ (with pkgs; [
-                  # clang-tidy and clang-format
-                  llzk-llvmPackages.clang-tools
-                 pkgs.pkg-config
-                  # git-clang-format
-                  libclang.python
-                ]);
-
-              shellHook = ''
-                # needed to get accurate compile_commands.json
-                export CXXFLAGS="$NIX_CFLAGS_COMPILE"
-
-                # Add binary dir to PATH for convenience
-                export PATH="$PWD"/build/bin:"$PATH"
-
-                # Add release helpers to the PATH for convenience
-                export PATH="${pkgs.changelogCreator.out}/bin":"$PATH"
-
-              '';
-            });
-          };
-
-          devShellBaseWithDefault = pkgs: final.devShellBase pkgs final.pcl-debug;
         };
     }
     // (flake-utils.lib.eachDefaultSystem (
@@ -158,6 +127,37 @@
             release-helpers.overlays.default
           ];
         };
+
+        # The default shell is used for PCL development.
+        # Because `nix develop` is used to set up a dev shell for a given
+        # derivation, we just need to extend the pcl derivation with any
+        # extra tools we need.
+        devShellBase = pkgs: pclEnv: {
+          shell = pclEnv.overrideAttrs (old: {
+            nativeBuildInputs =
+              old.nativeBuildInputs
+              ++ (with pkgs; [
+                # clang-tidy and clang-format
+                llzk-llvmPackages.clang-tools
+
+                # git-clang-format
+                libclang.python
+              ]);
+
+            shellHook = ''
+              # needed to get accurate compile_commands.json
+              export CXXFLAGS="$NIX_CFLAGS_COMPILE"
+
+              # Add binary dir to PATH for convenience
+              export PATH="$PWD"/build/bin:"$PATH"
+
+              # Add release helpers to the PATH for convenience
+              export PATH="${pkgs.changelogCreator.out}/bin":"$PATH"
+            '';
+          });
+        };
+
+        devShellBaseWithDefault = pkgs: devShellBase pkgs pkgs.pcl-debug;
       in
       {
         # Now, we can define the actual outputs of the flake
@@ -177,12 +177,12 @@
         };
 
         devShells = flake-utils.lib.flattenTree {
-          default = (pkgs.devShellBaseWithDefault pkgs).shell.overrideAttrs (_: {
+          default = (devShellBaseWithDefault pkgs).shell.overrideAttrs (_: {
             # Use Debug by default so assertions are enabled by default.
             cmakeBuildType = "Debug";
           });
-          debugClang = (pkgs.devShellBase pkgs pkgs.pclDebWithSansClang).shell;
-          debugGCC = (pkgs.devShellBase pkgs pkgs.pclDebWithSansGCC).shell;
+          debugClang = (devShellBase pkgs pkgs.pclDebWithSansClang).shell;
+          debugGCC = (devShellBase pkgs pkgs.pclDebWithSansGCC).shell;
         };
       }
     ));
