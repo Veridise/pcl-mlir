@@ -3,7 +3,7 @@ add_library(PCLDialect)
 file(GLOB_RECURSE PCLDialect_SOURCES "*.cpp")
 target_sources(PCLDialect PRIVATE ${PCLDialect_SOURCES})
 target_link_libraries(
-  PCLDialect PUBLIC PCLDialectHeaders
+  PCLDialect PUBLIC MLIRFuncDialect PCLDialectHeaders
                      MLIRIR MLIRSupport
                      LLVMHeaders MLIRHeaders)
 add_dependencies(PCLDialect PCLDialectIncGen)
