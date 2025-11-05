@@ -31,7 +31,7 @@
         let
           mkPCLDebWithSans =
             stdenv: reportName:
-            (final.pcl-debug.override { inherit stdenv; }).overrideAttrs (attrs: {
+            (final.pcl-mlir-debug.override { inherit stdenv; }).overrideAttrs (attrs: {
               cmakeBuildType = "DebWithSans";
 
               # Disable container overflow checks because it can give false positives in
@@ -51,11 +51,11 @@
             });
         in
         {
-          pcl = final.callPackage ./nix/pcl.nix {
+          pcl-mlir = final.callPackage ./nix/pcl.nix {
             clang = final.clang_20;
             mlir_pkg = final.mlir;
           };
-          pcl-debug =
+          pcl-mlir-debug =
             (final.callPackage ./nix/pcl.nix {
               clang = final.clang_20;
               mlir_pkg = final.mlir-debug;
@@ -65,10 +65,10 @@
                 NIX_CFLAGS_COMPILE = (attrs.NIX_CFLAGS_COMPILE or "") + " -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0";
               });
 
-          pclDebWithSansGCC = mkPCLDebWithSans final.gccStdenv "gcc";
-          pclDebWithSansClang = mkPCLDebWithSans final.clangStdenv "clang";
+          pcl-mlirDebWithSansGCC = mkPCLDebWithSans final.gccStdenv "gcc";
+          pcl-mlirDebWithSansClang = mkPCLDebWithSans final.clangStdenv "clang";
 
-          pclDebWithSansClangCov = final.pclDebWithSansClang.overrideAttrs (attrs: {
+          pcl-mlirDebWithSansClangCov = final.pcl-mlirDebWithSansClang.overrideAttrs (attrs: {
             postCheck = ''
               MANIFEST=profiles.manifest
               PROFDATA=coverage.profdata
@@ -157,23 +157,23 @@
           });
         };
 
-        devShellBaseWithDefault = pkgs: devShellBase pkgs pkgs.pcl-debug;
+        devShellBaseWithDefault = pkgs: devShellBase pkgs pkgs.pcl-mlir-debug;
       in
       {
         # Now, we can define the actual outputs of the flake
         packages = flake-utils.lib.flattenTree {
           # Copy the packages from imported overlays.
-          inherit (pkgs) pcl pcl-debug;
+          inherit (pkgs) pcl-mlir pcl-mlir-debug;
           inherit (pkgs) mlir mlir-debug;
           inherit (pkgs) changelogCreator;
           # Prevent use of libllvm and llvm from nixpkgs, which will have
           # different versions than mlir/llvm built here.
           inherit (pkgs.llzk-llvmPackages) libllvm llvm;
 
-          default = pkgs.pcl;
-          debugClang = pkgs.pclDebWithSansClang;
-          debugClangCov = pkgs.pclDebWithSansClangCov;
-          debugGCC = pkgs.pclDebWithSansGCC;
+          default = pkgs.pcl-mlir;
+          debugClang = pkgs.pcl-mlirDebWithSansClang;
+          debugClangCov = pkgs.pcl-mlirDebWithSansClangCov;
+          debugGCC = pkgs.pcl-mlirDebWithSansGCC;
         };
 
         devShells = flake-utils.lib.flattenTree {
@@ -181,8 +181,8 @@
             # Use Debug by default so assertions are enabled by default.
             cmakeBuildType = "Debug";
           });
-          debugClang = (devShellBase pkgs pkgs.pclDebWithSansClang).shell;
-          debugGCC = (devShellBase pkgs pkgs.pclDebWithSansGCC).shell;
+          debugClang = (devShellBase pkgs pkgs.pcl-mlirDebWithSansClang).shell;
+          debugGCC = (devShellBase pkgs pkgs.pcl-mlirDebWithSansGCC).shell;
         };
       }
     ));

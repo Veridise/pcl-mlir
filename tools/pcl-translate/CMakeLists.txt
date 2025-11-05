@@ -5,8 +5,8 @@ set_target_properties(pcl-translate PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                                           ${CMAKE_BINARY_DIR}/bin)
 target_link_libraries(pcl-translate
   PRIVATE
-  LLVMHeaders
-  MLIRHeaders
+  PCLDialect
+  PCLTransforms
   MLIRFuncDialect
   MLIRIR
   MLIRParser
@@ -14,5 +14,6 @@ target_link_libraries(pcl-translate
   MLIRPass
   MLIRTransforms
   MLIRTranslateLib
-  PCLDialect
+  LLVMHeaders
+  MLIRHeaders
 )

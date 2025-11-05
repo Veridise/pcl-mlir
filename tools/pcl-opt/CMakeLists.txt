@@ -8,6 +8,12 @@ target_link_libraries(pcl-opt
   PRIVATE
   PCLDialect
   PCLTransforms
+  MLIRFuncDialect
+  LLVMHeaders
+  MLIRHeaders
   MLIRIR
+  MLIRParser
   MLIROptLib
+  MLIRPass
+  MLIRTransforms
 )
