@@ -166,7 +166,7 @@ static LogicalResult exportPCL(ModuleOp mod, raw_ostream &os) {
       }
     });
 
-    // Outputs = return operands (or however you want to define them)
+    // Outputs = return operands
     if (auto ret = dyn_cast_or_null<func::ReturnOp>(entry.getTerminator())) {
       for (Value v : ret.getOperands()) {
         os << "(output " << ns.get(v, "out") << ")\n";
